@@ -1,0 +1,188 @@
+\documentclass[11pt,letterpaper,oneside]{article}
+\usepackage[letterpaper,width=150mm,top=25mm,bottom=25mm]{geometry}
+\usepackage[utf8x]{inputenc}
+\usepackage[scaled]{helvet}
+\renewcommand\familydefault{\sfdefault} 
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\graphicspath{ {../img/} }
+\author{Jesid Mauricio Mejía Castro}
+%\title{Bla Bla bal}
+%\usepackage{biblatex}
+%\addbibresource{..\bib\references.bib}
+\begin{document}
+\bibliographystyle{IEEEtran}
+
+\begin{titlepage}
+   \begin{center}
+       \vspace*{1cm}
+
+       \textbf{Modelamiento y análisis de datos de contratación estatal en Colombia a través de grafos}
+
+       \vspace{0.5cm}
+        %Thesis Subtitle
+            
+       \vspace{1.5cm} 
+
+       \textbf{Jesid Mauricio Mejía Castro}
+
+       %\vfill
+       \vspace{9.5cm}
+            
+       Maestría en Ingeniería y Analítica de Datos
+            
+       \vspace{0.4cm}
+     
+       \includegraphics[width=0.4\textwidth]{logo-utadeo-vert.jpg}
+            
+       Facultad de Ciencias Naturales e Ingeniería\\
+       Universidad de Bogotá Jorge Tadeo Lozano\\
+       Bogotá, Colombia\\
+       Abril 4 de 2020
+            
+   \end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introducción}
+La contratación pública en Colombia es uno de los mecanismos más importantes a través de los cuales el Estado colombiano adquiere obras de infraestructura, servicios y consultorías con el fin de atender las necesidades de las instituciones públicas \cite{Angarita-2018}.
+
+Una de las razones que motiva esta investigación es la atención especial que la ciudadanía ha puesto en los procesos de contratación pública. Buena parte de este interés proviene de la percepción del aumento de estos fenómenos en los ámbitos local y nacional. Según Betancourt \cite{Betancourt-2018}, la corrupción rampante en este tipo de contratos obedece al hecho de que no se han tomado medidas suficientes en la legislación, pero también a una deficiente administración del riesgo en los procesos de contratación.
+
+Para tratar de mitigar este flagelo, al menos desde una perspectiva académica que permita señalar el camino a proyectos posteriores, se propone la utilización de una base de datos basada en grafos para modelar este tipo de datos.
+
+Los grafos son objetos matemáticos compuestos de {\em nodos} y {\em arcos}. Aunque suelen presentarse con cierto nivel de abstracción, estos objetos tienen mucha utilidad al momento de modelar y analizar datos \cite{Needham-2019}. Los algoritmos de grafos son un subconjunto de las herramientas utilizadas en la analítica de grafos. Allí se cuentan con varios métodos: consultar los datos del grafo, utilizar estadística básica, explorar visualmente el grafo o incorporar grafos en tareas de aprendizaje automático. Se escoge este tipo de modelo de datos debido al potencial que tiene para exhibir comportamientos no evidentes.
+
+Para este proyecto se utilizarán los datos abiertos proporcionados por el Gobierno de Colombia a través de \texttt{gov.co}  y el SECOP II. Con estos datos se construirá una base de datos de grafos. Se espera que posteriormente, al utilizar algoritmos de grafos, se puedan evidenciar prácticas corruptas.
+
+\section{Marco teórico}
+\subsection{Conceptos de contratación pública}
+Para conformar un bosquejo sobre el procesos contratación estatal, se seguirá de cerca el trabajo de Angarita \cite{Angarita-2018}. En un contrato público intervienen dos partes: en un lado está el {\em oferente} o {\em contratista}; mientras que su contraparte se denomina {\em entidad pública} o {\em contratante}. El primero ofrece servicios o bienes a cambio de una remuneración económica, mientras que el segundo establece las reglas bajo las cuales se determinará la relación teniendo en cuenta que lo público tiene prioridad sobre lo privado.
+
+Desde el siglo XVIII, prácticamente con el nacimiento de la república, se viene regulando la contratación estatal en Colombia. Desde ese entonces era clara la idea de proteger el patrimonio público sin desconocer el derecho que tienen los particulares a una jusa retribución.
+
+Gran parte de los conceptos que conforman la contratación pública provienen de un ámbito normativo. En particular, la Ley 80 de 1993 \cite{Ley-80}  define los fines de la contratación estatal de la siguiente manera:
+
+\begin{quote}
+ARTÍCULO 3o. Los servidores públicos tendrán en consideración que al celebrar contratos y con la ejecución de los mismos, las entidades buscan el cumplimiento de los fines estatales, la continua y eficiente prestación de los servicios públicos y la efectividad de los derechos e intereses de los administrados que colaboran con ellas en la consecución de dichos fines.
+
+Los particulares, por su parte, tendrán en cuenta al celebrar y ejecutar contratos con las entidades estatales que, además de la obtención de utilidades cuya protección garantiza el Estado, colaboran con ellas en el logro de sus fines y cumplen una función social que, como tal, implica obligaciones.
+\end{quote}
+
+Con el fin de hacer más transparente la política pública, el país adoptó programas como el Sistema de Información para la Contratación Estatal (SICE) y el Sistema Electrónico para la Contratación Pública (SECOP).
+
+\subsection{Teoría de grafos}
+De acuerdo a Needham \cite{Needham-2019}, la historia de los grafos comienza en 1736 cuando Leonhard Euler resuelve el problema de los ``Siete Puentes de K\"{o}nigsberg''. Aquel problema preguntaba si era posible recorrer cuatro áreas de una ciudad conectadas por siete puentes si solo se cruzaba cada puente una sola vez.
+
+Aunque los grafos tienen un origen matemático, son una forma fidedigna y práctica de modelar datos. Un grafo se compone de dos tipos de objetos: \textit{nodos} y \textit{arcos}. Se pueden pensar los nodos como sustantivos en una frase y se pueden imaginar los arcos como los verbos que dan contexto a los nodos. Esta idea resulta útil al momento de modelar datos a través de grafos.
+
+Una \textit{base de datos de grafos}, según Bechberger \cite{Bechberger-2020}, es un motor de almacenamiento de datos que combina las estructuras básicas de grafos (nodos y arcos) con tecnología de persistencia y un lenguaje de consulta.
+
+Modelar los datos es la primera parte del proceso, el procesamiento de los datos permitirá revelar aquello que no es tan obvio. La analítica de grafos es el uso de algoritmos de grafos para analizar datos conectados. Existen varios métodos: consultas. estadísticas básicas, exploración visual del grafo o tareas de aprendizaje automático, véase \cite{Robinson-2013}.
+
+Los grafos pueden tomar múltiples formas:
+\begin{itemize}
+\item Redes aleatorias: tienen distribuciones promedio, no tienen estructura o patrón jerárquico.
+\item Redes de mundo pequeño: altamente densas con longitudes de arco pequeñas.
+\item Redes de escala libre: redes altamente distribuidas.
+\end{itemize}
+
+%insertar figura de los tipso de redes
+
+En un grafo \textit{no dirigido}, los arcos se consideran bidireccionales. En un grafo \textit{dirigido}, los arcos poseen una dirección específica. Los arcos que apuntan a un nodo se les denomina \textit{enlaces de entrada}, mientras que aquellos que se originan desde un nodo se denominan \textit{enlaces de salida}.
+
+Recurriendo nuevamente a Needham \cite{Needham-2019}, pueden agruparse los algoritmos de grafos en tres categorías: búsqueda de caminos, computación de centralidad y detección de comunidad.
+
+La búsqueda de caminos resulta fundamental en la analítica de grafos. Aquí, la búsqueda de la ruta más corta es tal vez la actividad más común. La centralidad consiste en comprender qué nodos son los más importantes en una red. La detección de comunidad se soporta en concepto de \textit{conectividad} que permite encontrar núcleos o centros dentro de la red.
+
+\newpage
+\section{Estado del arte}
+Son múltiples los ejemplos de la utilización de grafos par resolver problemas en los que el contexto del problema es complejo y la relación entre los elementos no es inmediata.
+
+En trabajos como el de Branting \cite{Branting-2016} se utilizó la analítica de grafos con el fin de estimar los fraudes de los proveedores de salud. Para ello estos investigadores se basaron en dos grupos de algoritmos. Un primer grupo calcula la similaridad en el comportamiento para separa a los proveedores fraudulentos de los no fraudulentos. Un segundo grupo de algoritmos estimó la propagación del riesgo de fraude a través de colocación geoespacial.
+
+Muchos de estos algoritmos han sido aplicados con éxito en el análisi de redes sociales. En trabajos como el de Naik \cite{Naik-2017} se utilizó satisfactoriamente la analítica de datos para resumir los \textit{tweets} de manera que los usuarios puedan comprender y decidir a quien seguir dentro de la red social. Un artículo relacionado es el de Drakopoulos \cite{Drakopoulos-2017} en donde se analizan patrones de conectividad en \textit{Twitter} con el fin de obtener métricas de influencia dentro de la red social.
+
+Simperl \cite{Simperl-2018} planteó en 2020 una plataforma de contratación pública para la Unión Europea basada en grafos con el fin de que las partes en el proceso pudieran tomar decisiones.
+
+Soylu en \cite{Soylu-2020-1} y \cite{Soylu-2020-2} construyo también un grafo de conocimiento con datos abiertos provenientes de la contratación estatal en la Unión Europea. En el primer caso, su estrategia se basa fuertemente en la integración de datos, pues estos provienen de múltiples fuentes con diferentes formatos dependiendo del país. En el segundo caso, con mucho más detalle técnico, se agregan herramientas de {\em front-end} para la detección de anomalías y la búsqueda multilinguistica.
+
+En otros artículos se ha utilizado la analítica de grafos para contemplar aspectos de la contratación pública en los estados. Por ejemplo, se ha utilizado para analizar la competición en los procesos de aprovisionamiento para insumos de la salud pública. \cite{Fountoukidis-2021}: a través de estas técnicas se trató de identificar oligopolios con el fin de que el sector público pudiera intervenir en la regulación en problemas de competición.
+
+\section{Planteamiento del problema}
+Según Serrano \cite{Serrano-2014}, la corrupción es un flagelo que ha tocado a todas las civilizaciones del mundo en algún momento de su historia. Las consecuencias de la corrupción incluyen el aumento de la ineficiencia administrativa que a su vez puede incluir la baja calidad en los bienes y servicios prestados. Además, reduce el presupuesto estatal, lo que hace menos productivo el gasto público.
+
+Para Betancourt \cite{Betancourt-2018}, uno de los principales problemas es la lentitud al momento de identificar el fenómeno. El trabajo acá propuesto trata de brindar una alternativa en la identificación de estos fenómenos al proporcionar una herramienta con la capacidad de encontrar relaciones complejas en los datos proporcionados por el SECOP.
+
+\newpage
+\section{Objetivos}
+	\subsection{Objetivo general}
+Proporcionar una herramienta alternativa para el modelo de datos de la contratación pública que permita identificar de manera más intuitiva las prácticas corruptas o actividades inusuales a través de la analítica de grafos.	
+	\subsection{Objetivos específicos}
+	\begin{itemize}
+	\item Construir una base de datos de grafos a partir de los datos proporcionados por el SECOP.
+	\item Utilizar algoritmos de grafos con el fin de identificar participantes con relaciones inusuales en los contratos públicos.
+	\end{itemize}
+
+\section{Metodología}
+Este trabajo, al ser un proyecto de minería de datos, se alineará con la metodología CRISP-DM \cite{crispdm-2000}. Por consiguiente, el trabajo comprenderá las siguientes fases:
+\begin{itemize}
+\item Entendimiento del negocio\\
+En esta etapa se estudiará con la profundidad necesaria los procesos de contratación pública en Colombia. Esta exploración conceptual estará alineada con los objetivos del proyecto. El resultado de esta etapa será traducir el conocimiento en términos de un problema de minería de datos.
+\item Entendimiento de los datos\\
+En este punto se realizará una recolección inicial de datos desde el SECOP a través de \texttt{datos.gov.co} y se llevarán a cabo actividades relacionadas con el entendimiento de los mismo teniendo como referencia el conocimiento adquirido sobre contratación pública.
+\item Preparación de los datos\\
+En esta fase se realizarán a cabo la transformación de los datos recopilados desde el SECOP hacia una base de datos basada en grafos lista para analizar.
+\item Modelamiento\\
+Una vez preparado el conjunto de datos, se utilizarán algunos de los algoritmos descritos en el Marco Teórico con el fin de encontrar patrones ocultos en la información orientados a identificar participantes sospechosos en los procesos de contratación.
+\item Evaluación\\
+Para evaluar la efectividad del modelo, se recopilarán datos en los que previamente se hayan identificado patrones de corrupción con el fin de comparar los resultados.
+\item Despliegue\\
+Los resultados del modelo se prepararán para ser mostrados a través de herramientas de visualización de grafos.
+\end{itemize}
+
+\newpage
+\section{Cronograma de trabajo}
+
+El siguiente cronograma de trabajo se concibe para llevarse a cabo desde el 26 de julio de 2021 hasta el 20 de noviembre de 2021.
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+ \hline
+ \textbf{Actividad} & \textbf{No. de semanas}\\ 
+ \hline
+ Entendimiento del negocio & 3\\
+ Entendimiento de los datos & 3\\
+ Preparación de los datos & 3\\
+ Modelamiento & 3\\
+ Evaluación & 2\\
+ Despliegue & 2 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\section{Presupuesto}
+\begin{center}
+\begin{tabular}{ |p{3cm}|p{2cm}|p{1.5cm}|p{3cm}| }
+ \hline
+ \textbf{Recurso} & \textbf{Fuente de financiación} & \textbf{Costo (COP)} & \textbf{Observaciones}\\ 
+ \hline
+ Acceso a Internet & Propia & \$110.000 & \\ \hline
+ Equipo de cómputo & Propia & \$0 & Adquirido\\ \hline
+ Neo4j Enterprise 2.2.5 for Developers & Propia & \$0 & Gratis con previo registro y uso no comercial. \\ \hline
+ Intérprete de Python 3.9 & Propia & \$0 & Licencia Open Source compatible con GPL. \\
+ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\bibliography{references.bib}
+
+\end{document}
