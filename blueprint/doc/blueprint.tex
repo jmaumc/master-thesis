@@ -1,188 +1,760 @@
-\documentclass[11pt,letterpaper,oneside]{article}
-\usepackage[letterpaper,width=150mm,top=25mm,bottom=25mm]{geometry}
-\usepackage[utf8x]{inputenc}
-\usepackage[scaled]{helvet}
-\renewcommand\familydefault{\sfdefault} 
-\usepackage[T1]{fontenc}
-\usepackage{ucs}
-\usepackage[spanish]{babel}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\graphicspath{ {../img/} }
-\author{Jesid Mauricio Mejía Castro}
-%\title{Bla Bla bal}
-%\usepackage{biblatex}
-%\addbibresource{..\bib\references.bib}
-\begin{document}
-\bibliographystyle{IEEEtran}
-
-\begin{titlepage}
-   \begin{center}
-       \vspace*{1cm}
-
-       \textbf{Modelamiento y análisis de datos de contratación estatal en Colombia a través de grafos}
-
-       \vspace{0.5cm}
-        %Thesis Subtitle
-            
-       \vspace{1.5cm} 
-
-       \textbf{Jesid Mauricio Mejía Castro}
-
-       %\vfill
-       \vspace{9.5cm}
-            
-       Maestría en Ingeniería y Analítica de Datos
-            
-       \vspace{0.4cm}
-     
-       \includegraphics[width=0.4\textwidth]{logo-utadeo-vert.jpg}
-            
-       Facultad de Ciencias Naturales e Ingeniería\\
-       Universidad de Bogotá Jorge Tadeo Lozano\\
-       Bogotá, Colombia\\
-       Abril 4 de 2020
-            
-   \end{center}
-\end{titlepage}
-
-\tableofcontents
-\newpage
-
-\section{Introducción}
-La contratación pública en Colombia es uno de los mecanismos más importantes a través de los cuales el Estado colombiano adquiere obras de infraestructura, servicios y consultorías con el fin de atender las necesidades de las instituciones públicas \cite{Angarita-2018}.
-
-Una de las razones que motiva esta investigación es la atención especial que la ciudadanía ha puesto en los procesos de contratación pública. Buena parte de este interés proviene de la percepción del aumento de estos fenómenos en los ámbitos local y nacional. Según Betancourt \cite{Betancourt-2018}, la corrupción rampante en este tipo de contratos obedece al hecho de que no se han tomado medidas suficientes en la legislación, pero también a una deficiente administración del riesgo en los procesos de contratación.
-
-Para tratar de mitigar este flagelo, al menos desde una perspectiva académica que permita señalar el camino a proyectos posteriores, se propone la utilización de una base de datos basada en grafos para modelar este tipo de datos.
-
-Los grafos son objetos matemáticos compuestos de {\em nodos} y {\em arcos}. Aunque suelen presentarse con cierto nivel de abstracción, estos objetos tienen mucha utilidad al momento de modelar y analizar datos \cite{Needham-2019}. Los algoritmos de grafos son un subconjunto de las herramientas utilizadas en la analítica de grafos. Allí se cuentan con varios métodos: consultar los datos del grafo, utilizar estadística básica, explorar visualmente el grafo o incorporar grafos en tareas de aprendizaje automático. Se escoge este tipo de modelo de datos debido al potencial que tiene para exhibir comportamientos no evidentes.
-
-Para este proyecto se utilizarán los datos abiertos proporcionados por el Gobierno de Colombia a través de \texttt{gov.co}  y el SECOP II. Con estos datos se construirá una base de datos de grafos. Se espera que posteriormente, al utilizar algoritmos de grafos, se puedan evidenciar prácticas corruptas.
-
-\section{Marco teórico}
-\subsection{Conceptos de contratación pública}
-Para conformar un bosquejo sobre el procesos contratación estatal, se seguirá de cerca el trabajo de Angarita \cite{Angarita-2018}. En un contrato público intervienen dos partes: en un lado está el {\em oferente} o {\em contratista}; mientras que su contraparte se denomina {\em entidad pública} o {\em contratante}. El primero ofrece servicios o bienes a cambio de una remuneración económica, mientras que el segundo establece las reglas bajo las cuales se determinará la relación teniendo en cuenta que lo público tiene prioridad sobre lo privado.
-
-Desde el siglo XVIII, prácticamente con el nacimiento de la república, se viene regulando la contratación estatal en Colombia. Desde ese entonces era clara la idea de proteger el patrimonio público sin desconocer el derecho que tienen los particulares a una jusa retribución.
-
-Gran parte de los conceptos que conforman la contratación pública provienen de un ámbito normativo. En particular, la Ley 80 de 1993 \cite{Ley-80}  define los fines de la contratación estatal de la siguiente manera:
-
-\begin{quote}
-ARTÍCULO 3o. Los servidores públicos tendrán en consideración que al celebrar contratos y con la ejecución de los mismos, las entidades buscan el cumplimiento de los fines estatales, la continua y eficiente prestación de los servicios públicos y la efectividad de los derechos e intereses de los administrados que colaboran con ellas en la consecución de dichos fines.
-
-Los particulares, por su parte, tendrán en cuenta al celebrar y ejecutar contratos con las entidades estatales que, además de la obtención de utilidades cuya protección garantiza el Estado, colaboran con ellas en el logro de sus fines y cumplen una función social que, como tal, implica obligaciones.
-\end{quote}
-
-Con el fin de hacer más transparente la política pública, el país adoptó programas como el Sistema de Información para la Contratación Estatal (SICE) y el Sistema Electrónico para la Contratación Pública (SECOP).
-
-\subsection{Teoría de grafos}
-De acuerdo a Needham \cite{Needham-2019}, la historia de los grafos comienza en 1736 cuando Leonhard Euler resuelve el problema de los ``Siete Puentes de K\"{o}nigsberg''. Aquel problema preguntaba si era posible recorrer cuatro áreas de una ciudad conectadas por siete puentes si solo se cruzaba cada puente una sola vez.
-
-Aunque los grafos tienen un origen matemático, son una forma fidedigna y práctica de modelar datos. Un grafo se compone de dos tipos de objetos: \textit{nodos} y \textit{arcos}. Se pueden pensar los nodos como sustantivos en una frase y se pueden imaginar los arcos como los verbos que dan contexto a los nodos. Esta idea resulta útil al momento de modelar datos a través de grafos.
-
-Una \textit{base de datos de grafos}, según Bechberger \cite{Bechberger-2020}, es un motor de almacenamiento de datos que combina las estructuras básicas de grafos (nodos y arcos) con tecnología de persistencia y un lenguaje de consulta.
-
-Modelar los datos es la primera parte del proceso, el procesamiento de los datos permitirá revelar aquello que no es tan obvio. La analítica de grafos es el uso de algoritmos de grafos para analizar datos conectados. Existen varios métodos: consultas. estadísticas básicas, exploración visual del grafo o tareas de aprendizaje automático, véase \cite{Robinson-2013}.
-
-Los grafos pueden tomar múltiples formas:
-\begin{itemize}
-\item Redes aleatorias: tienen distribuciones promedio, no tienen estructura o patrón jerárquico.
-\item Redes de mundo pequeño: altamente densas con longitudes de arco pequeñas.
-\item Redes de escala libre: redes altamente distribuidas.
-\end{itemize}
-
-%insertar figura de los tipso de redes
-
-En un grafo \textit{no dirigido}, los arcos se consideran bidireccionales. En un grafo \textit{dirigido}, los arcos poseen una dirección específica. Los arcos que apuntan a un nodo se les denomina \textit{enlaces de entrada}, mientras que aquellos que se originan desde un nodo se denominan \textit{enlaces de salida}.
-
-Recurriendo nuevamente a Needham \cite{Needham-2019}, pueden agruparse los algoritmos de grafos en tres categorías: búsqueda de caminos, computación de centralidad y detección de comunidad.
-
-La búsqueda de caminos resulta fundamental en la analítica de grafos. Aquí, la búsqueda de la ruta más corta es tal vez la actividad más común. La centralidad consiste en comprender qué nodos son los más importantes en una red. La detección de comunidad se soporta en concepto de \textit{conectividad} que permite encontrar núcleos o centros dentro de la red.
-
-\newpage
-\section{Estado del arte}
-Son múltiples los ejemplos de la utilización de grafos par resolver problemas en los que el contexto del problema es complejo y la relación entre los elementos no es inmediata.
-
-En trabajos como el de Branting \cite{Branting-2016} se utilizó la analítica de grafos con el fin de estimar los fraudes de los proveedores de salud. Para ello estos investigadores se basaron en dos grupos de algoritmos. Un primer grupo calcula la similaridad en el comportamiento para separa a los proveedores fraudulentos de los no fraudulentos. Un segundo grupo de algoritmos estimó la propagación del riesgo de fraude a través de colocación geoespacial.
-
-Muchos de estos algoritmos han sido aplicados con éxito en el análisi de redes sociales. En trabajos como el de Naik \cite{Naik-2017} se utilizó satisfactoriamente la analítica de datos para resumir los \textit{tweets} de manera que los usuarios puedan comprender y decidir a quien seguir dentro de la red social. Un artículo relacionado es el de Drakopoulos \cite{Drakopoulos-2017} en donde se analizan patrones de conectividad en \textit{Twitter} con el fin de obtener métricas de influencia dentro de la red social.
-
-Simperl \cite{Simperl-2018} planteó en 2020 una plataforma de contratación pública para la Unión Europea basada en grafos con el fin de que las partes en el proceso pudieran tomar decisiones.
-
-Soylu en \cite{Soylu-2020-1} y \cite{Soylu-2020-2} construyo también un grafo de conocimiento con datos abiertos provenientes de la contratación estatal en la Unión Europea. En el primer caso, su estrategia se basa fuertemente en la integración de datos, pues estos provienen de múltiples fuentes con diferentes formatos dependiendo del país. En el segundo caso, con mucho más detalle técnico, se agregan herramientas de {\em front-end} para la detección de anomalías y la búsqueda multilinguistica.
-
-En otros artículos se ha utilizado la analítica de grafos para contemplar aspectos de la contratación pública en los estados. Por ejemplo, se ha utilizado para analizar la competición en los procesos de aprovisionamiento para insumos de la salud pública. \cite{Fountoukidis-2021}: a través de estas técnicas se trató de identificar oligopolios con el fin de que el sector público pudiera intervenir en la regulación en problemas de competición.
-
-\section{Planteamiento del problema}
-Según Serrano \cite{Serrano-2014}, la corrupción es un flagelo que ha tocado a todas las civilizaciones del mundo en algún momento de su historia. Las consecuencias de la corrupción incluyen el aumento de la ineficiencia administrativa que a su vez puede incluir la baja calidad en los bienes y servicios prestados. Además, reduce el presupuesto estatal, lo que hace menos productivo el gasto público.
-
-Para Betancourt \cite{Betancourt-2018}, uno de los principales problemas es la lentitud al momento de identificar el fenómeno. El trabajo acá propuesto trata de brindar una alternativa en la identificación de estos fenómenos al proporcionar una herramienta con la capacidad de encontrar relaciones complejas en los datos proporcionados por el SECOP.
-
-\newpage
-\section{Objetivos}
-	\subsection{Objetivo general}
-Proporcionar una herramienta alternativa para el modelo de datos de la contratación pública que permita identificar de manera más intuitiva las prácticas corruptas o actividades inusuales a través de la analítica de grafos.	
-	\subsection{Objetivos específicos}
+	\documentclass[11pt,letterpaper,oneside]{article}
+	\usepackage[letterpaper,width=150mm,top=25mm,bottom=25mm]{geometry}
+	\usepackage[utf8x]{inputenc}
+	\usepackage[scaled]{helvet}
+	\renewcommand\familydefault{\sfdefault} 
+	\usepackage[T1]{fontenc}
+	\usepackage{ucs}
+	\usepackage[spanish]{babel}
+	\usepackage{amsmath}
+	\usepackage{amsfonts}
+	\usepackage{amssymb}
+	\usepackage{graphicx}
+	\usepackage{colortbl}
+	\graphicspath{ {../img/} }
+	\author{Jesid Mauricio Mejía Castro}
+	%\title{Bla Bla bal}
+	%\usepackage{biblatex}
+	%\addbibresource{..\bib\references.bib}
+	\begin{document}
+	\bibliographystyle{IEEEtran}
+	
+	\begin{titlepage}
+	   \begin{center}
+	       \vspace*{1cm}
+	
+	       \textbf{Modelamiento y análisis de datos de contratación estatal en Colombia a través de grafos}
+	
+	       \vspace{0.5cm}
+	        %Thesis Subtitle
+	            
+	       \vspace{1.5cm} 
+	
+	       \textbf{Jesid Mauricio Mejía Castro}
+	
+	       %\vfill
+	       \vspace{9.5cm}
+	            
+	       Maestría en Ingeniería y Analítica de Datos
+	            
+	       \vspace{0.4cm}
+	     
+	       \includegraphics[width=0.4\textwidth]{logo-utadeo-vert.jpg}
+	            
+	       Facultad de Ciencias Naturales e Ingeniería\\
+	       Universidad de Bogotá Jorge Tadeo Lozano\\
+	       Bogotá, Colombia\\
+	       Abril 4 de 2020
+	            
+	   \end{center}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Introducción}
+	La contratación pública en Colombia es uno de los mecanismos más importantes a través de los cuales el Estado colombiano adquiere obras de infraestructura, servicios y consultorías con el fin de atender las necesidades de las instituciones públicas \cite{Angarita-2018}.
+	
+	Una de las razones que motiva esta investigación es la atención especial que la ciudadanía ha puesto en los procesos de contratación pública. Buena parte de este interés proviene de la percepción del aumento de estos fenómenos en los ámbitos local y nacional. Según Betancourt \cite{Betancourt-2018}, la corrupción rampante en este tipo de contratos obedece al hecho de que no se han tomado medidas suficientes en la legislación, pero también a una deficiente administración del riesgo en los procesos de contratación.
+	
+	Para tratar de mitigar este flagelo, al menos desde una perspectiva académica que permita señalar el camino a proyectos posteriores, se propone la utilización de una base de datos basada en grafos para modelar los datos provenientes de este campo.
+	
+	Los grafos son objetos matemáticos compuestos de {\em nodos} y {\em arcos}. Aunque suelen presentarse con cierto nivel de abstracción, estos objetos tienen mucha utilidad al momento de modelar y analizar datos \cite{Needham-2019}. Los algoritmos de grafos son un subconjunto de las herramientas utilizadas en la analítica de grafos. Allí se cuenta con varias alternativas: consultar los datos del grafo, utilizar estadística básica, explorar visualmente el grafo o incorporar grafos en tareas de aprendizaje automático. Se escoge este tipo de modelo de datos debido al potencial que tiene para exhibir comportamientos no evidentes.
+	
+	Siguiendo de carca el trabajo de Fernandes \cite{Fernandes-2018}, encontramos que los datos modelados con grafos tienen una ventaja con respecto a aquellos almacenados bajo el modelo relacional. En particular, resulta altamente conveniente cuando los conjuntos de datos exhiben alta escalabilidad y las relaciones entre los datos es compleja de manera que se requiere mayor flexibilidad al momento de analizar dichas relaciones. Este tipo de tecnología ha resultado ser disruptiva en múltiples áreas como la gestión de cadenas de abastecimiento, sistemas de recomendación para comercio en línea, seguridad, detección de fraudes, entre otras.
+	
+	Para este proyecto se utilizarán los datos abiertos proporcionados por el Gobierno de Colombia a través de \texttt{datos.gov.co} y el Sistema Electrónico de Contratación Pública (SECOP). En particular, se tendrán en cuenta los siguientes conjuntos de datos:
 	\begin{itemize}
-	\item Construir una base de datos de grafos a partir de los datos proporcionados por el SECOP.
-	\item Utilizar algoritmos de grafos con el fin de identificar participantes con relaciones inusuales en los contratos públicos.
+		\item Proveedores registrados: información básica de los proveedores registrados en SECOP II.
+		\item Contratos electrónicos: información de los contratos registrados en SECOP II desde su lanzamiento.
+		\item Procesos de contratación: registro de los procesos de compra, sean o no adjudicados, hechos en la plataforma SECOP II desde su lanzamiento.
+		\item Adiciones: adiciones hechas a los contratos firmados en la plataforma SECOP II.
+	\end{itemize}
+	Dadas las ventajas que ofrece un modelo de grafos para detectar relaciones ocultas en los datos se utilizará una base de datos de este tipo. Como resultado, se desea obtener un modelo de datos que permita realizar consultas con alta profundidad y detecte de manera eficaz patrones de corrupción y fraude.
+	
+	\section{Marco teórico}
+	
+	\subsection{Conceptos de contratación pública}
+	Para conformar un bosquejo sobre los procesos de contratación estatal, se seguirá de cerca el trabajo de Angarita \cite{Angarita-2018}. En un contrato público intervienen dos partes: en un lado está el {\em oferente} o {\em contratista}; mientras que su contraparte se denomina {\em entidad pública} o {\em contratante}. El primero ofrece servicios o bienes a cambio de una remuneración económica, mientras que el segundo establece las reglas bajo las cuales se determinará la relación teniendo en cuenta que lo público tiene prioridad sobre lo privado.
+	
+	Desde el siglo XVIII, prácticamente con el nacimiento de la república, se viene regulando la contratación estatal en Colombia. Desde ese entonces era clara la idea de proteger el patrimonio público sin desconocer el derecho que tienen los particulares a una justa retribución.
+	
+	Gran parte de los conceptos que conforman la contratación pública provienen de un ámbito normativo. En particular, la Ley 80 de 1993 \cite{Ley-80} define los fines de la contratación estatal de la siguiente manera:
+	
+	\begin{quote}
+	ARTÍCULO 3o. Los servidores públicos tendrán en consideración que al celebrar contratos y con la ejecución de los mismos, las entidades buscan el cumplimiento de los fines estatales, la continua y eficiente prestación de los servicios públicos y la efectividad de los derechos e intereses de los administrados que colaboran con ellas en la consecución de dichos fines.
+	
+	Los particulares, por su parte, tendrán en cuenta al celebrar y ejecutar contratos con las entidades estatales que, además de la obtención de utilidades cuya protección garantiza el Estado, colaboran con ellas en el logro de sus fines y cumplen una función social que, como tal, implica obligaciones.
+	\end{quote}
+	
+	Con el fin de hacer más transparente la política pública, el país adoptó programas como el Sistema de Información para la Contratación Estatal (SICE) y el SECOP.
+	
+	\subsection{Sistema Electrónico de Contratación Pública (SECOP II)}
+	El SECOP II es un sistema transaccional donde se registran los proveedores y las instituciones del estado. Las cuentas asociadas a las Entidades Estatales pueden crear, evalúar y adjudicar Procesos de Contratación. Los Porveedores pueden presentar ofertas y seguir el proceso de selección en tiempo real. En la introducción se listaron los conjuntos de datos a utilizar en este proyecto. En el Cuadro \ref{tab:t05} se reseñan algunas de las características básicas de estos datos.
+	
+		\begin{table}[!htp]
+		\tiny 
+		\centering
+		\begin{tabular}{|l|c|c|c|c|c|}
+			\hline
+			\textbf{Conjunto de datos} & \textbf{Número de columnas} & \textbf{Número de filas} & \textbf{Fecha de creación} & \textbf{Fecha última actualización} & \textbf{Detalle de columnas} \\
+			\hline
+			Proveedores Registrados & 11 & 678K & 30 de septiembre de 2019 & 6 de junio de 2021 & Anexos, Cuadro \ref{tab:t01} \\
+			\hline
+			Contratos Electrónicos & 67 & 1.05M & 30 de septiembre de 2019 & 4 de junio de 2021 & Anexos, Cuadro \ref{tab:t02} \\
+			\hline
+			Procesos de Contratación & 58 & 1.03M & 30 de septiembre de 2019 & 4 de junio de 2021 & Anexos, Cuadro \ref{tab:t03} \\
+			\hline
+			Adiciones & 5 & 1.04M & 30 de septiembre de 2019 & 6 de junio de 2021 & Anexos, Cuadro \ref{tab:t04} \\
+			\hline
+		\end{tabular}
+		\caption{Conjuntos de datos}
+		\label{tab:t05}
+	\end{table}
+	
+	\newpage
+	
+	\subsection{Teoría de grafos}
+	De acuerdo a Needham \cite{Needham-2019}, la historia de los grafos comienza en 1736 cuando Leonhard Euler resuelve el problema de los ``Siete Puentes de K\"{o}nigsberg''. Aquel problema preguntaba si era posible recorrer cuatro áreas de una ciudad conectadas por siete puentes si solo se cruzaba cada puente una sola vez.
+	
+	Aunque los grafos tienen un origen matemático, son una forma fidedigna y práctica de modelar datos. Un grafo se compone de dos tipos de objetos: \textit{nodos} y \textit{arcos}. Se pueden pensar los nodos como sustantivos en una frase y se pueden imaginar los arcos como los verbos que dan contexto a los nodos. Esta idea resulta útil al momento de modelar datos a través de grafos.
+	
+	Una \textit{base de datos de grafos}, según Bechberger \cite{Bechberger-2020}, es un motor de almacenamiento de datos que combina las estructuras básicas de grafos (nodos y arcos) con un mecanismo de persistencia y un lenguaje de consulta.
+	
+	Modelar los datos es la primera parte del proceso, el procesamiento de los datos permitirá revelar aquello que no es tan obvio. La analítica de grafos es el uso de algoritmos de grafos para analizar datos conectados. Existen varios métodos: consultas. estadísticas básicas, exploración visual del grafo o tareas de aprendizaje automático, véase \cite{Robinson-2013}.
+	
+	Los grafos pueden tomar múltiples formas:
+	\begin{itemize}
+	\item Redes aleatorias: tienen distribuciones promedio, no tienen estructura o patrón jerárquico.
+	\item Redes de mundo pequeño: altamente densas con longitudes de arco pequeñas.
+	\item Redes de escala libre: redes altamente distribuidas.
+	\end{itemize}
+	
+	%insertar figura de los tipso de redes
+	
+	En un grafo \textit{no dirigido}, los arcos se consideran bidireccionales. En un grafo \textit{dirigido}, los arcos poseen una dirección específica. Los arcos que apuntan a un nodo se les denomina \textit{enlaces de entrada}, mientras que aquellos que se originan desde un nodo se denominan \textit{enlaces de salida}.
+	
+	\subsection{Algoritmos de grafos}
+	
+	Recurriendo nuevamente a Needham \cite{Needham-2019} y Wiese \cite{Wiese-2019}, pueden agruparse los algoritmos de grafos en tres categorías: búsqueda de caminos, cálculo de centralidad y detección de comunidad.
+	
+	\subsubsection{Búsqueda de caminos}
+	Los algoritmos de búsqueda en grafos exploran la red con el objetivo de realizar búsquedas explícitas o descubrimientos generales. Los algoritmos fundamentales para recorrer un grafo son la Búsqueda en Profundidad ({\em Depth First Search}) y la Búsqueda en Anchura ({\em Breadth First Search}); estos son a menudo utilizados como primer paso en otros tipos de análisis. En particular, resultan importantes los siguientes algoritmos de búsqueda de caminos:
+	
+	\begin{itemize}
+		\item Camino más corto con dos variaciones (A* y Yen): encuentra la camino más corto entre dos nodos
+		\item Camino más corto dos-a-dos y camino más corto desde una fuente: encuentran la ruta más corta entro todas las parejas de nodos o desde un nodo dado.
+		\item Árbol de mínima expansión: encuentra la estructura de árbol conectada con el menor costo de nodos visitados desde un nodo dado.
+		\item Caminata aleatoria: es un paso útil de preprocesamiento en algoritmos de aprendizaje automático y otros procedimientos.
 	\end{itemize}
 
-\section{Metodología}
-Este trabajo, al ser un proyecto de minería de datos, se alineará con la metodología CRISP-DM \cite{crispdm-2000}. Por consiguiente, el trabajo comprenderá las siguientes fases:
-\begin{itemize}
-\item Entendimiento del negocio\\
-En esta etapa se estudiará con la profundidad necesaria los procesos de contratación pública en Colombia. Esta exploración conceptual estará alineada con los objetivos del proyecto. El resultado de esta etapa será traducir el conocimiento en términos de un problema de minería de datos.
-\item Entendimiento de los datos\\
-En este punto se realizará una recolección inicial de datos desde el SECOP a través de \texttt{datos.gov.co} y se llevarán a cabo actividades relacionadas con el entendimiento de los mismo teniendo como referencia el conocimiento adquirido sobre contratación pública.
-\item Preparación de los datos\\
-En esta fase se realizarán a cabo la transformación de los datos recopilados desde el SECOP hacia una base de datos basada en grafos lista para analizar.
-\item Modelamiento\\
-Una vez preparado el conjunto de datos, se utilizarán algunos de los algoritmos descritos en el Marco Teórico con el fin de encontrar patrones ocultos en la información orientados a identificar participantes sospechosos en los procesos de contratación.
-\item Evaluación\\
-Para evaluar la efectividad del modelo, se recopilarán datos en los que previamente se hayan identificado patrones de corrupción con el fin de comparar los resultados.
-\item Despliegue\\
-Los resultados del modelo se prepararán para ser mostrados a través de herramientas de visualización de grafos.
-\end{itemize}
+	\subsubsection{Cálculo de centralidad}
+	Los algoritmos de centralidad son utilizados para entender el rol de nodos particulares en el grafo y su impacto en la red. Son útiles para identificar nodos importantes y entender dinámicas de grupos tales como credibilidad, accesibilidad, velocidad de propagación y puentes entre grupos. Los algoritmos más importantes de este tipo son:
+	
+	\begin{itemize}
+		\item Grado de centralidad: es una métrica base para evaluar {\em conectitud}.
+		\item Centralidad de cercanía: mide variaciones para grupos desconectados.
+		\item Centralidad de interposición: encuentra puntos de control, incluyendo una alternativa para la aproximación
+		\item \textit{PageRank}: muestra la influencia general de un nodo, incluyendo una opciones de personalización.
+	\end{itemize}
 
-\newpage
-\section{Cronograma de trabajo}
+	\subsubsection{Detección de comunidad}
+	La formación de comunidades es común en todo tipo de redes e identificarlas es esencial para evaluar el comportamiento de grupos y fenómenos emergentes. El principio general al encontrar comunidades es que sus miembros tendrán más relaciones dentro del grupo que los nodos fuera del grupo. Los algoritmos más representativos de detección de comunidades son los siguientes:
+	
+	\begin{itemize}
+		\item Conteo de triángulos y coeficiente de agrupamiento: se utilizan para calcular la densidad en las relaciones
+		\item Componentes fuertemente conectados y componentes conectados: encuentran grupos conectados
+		\item Propagación de etiquetas: infiere rápidamente los grupos basándose en las etiquetas de los nodos.
+		\item Modularidad de Louvain: busca jerarquías y grupos de calidad.
+	\end{itemize}
+	
+	\newpage
+	\subsection{Bases de datos basadas en grafos}
+	Para la siguiente parte, se ha seguido de cerca el trabajo de Fernandes \cite{Fernandes-2018}. Las principales bases de datos activas orientadas a grafos son las siguientes:
+	\begin{itemize}
+		\item \textbf{AllegroGraph}: es una base de datos RDF ({\em Resource Persistence Framework}) orientada a grafos muy utilizada en proyectos comerciales, {\em open-source} y de defensa. Está caracterizada por un uso eficiente de memoria al combinarlo con almacenamiento en disco. Algunas de sus ventajas competitivas son las siguientes:
+		\begin{itemize}
+			\item Soporte de consultas {\em ad hoc} a través de SPARQL, PROLOG y lenguajes como JavaScript.
+			\item Índices quíntuples ordenados para campos primarios y no primarios.
+			\item Visualización de grafos a través de \texttt{Gruff}.
+			\item Recuperación completa y rápida.
+		\end{itemize}
+		\item \textbf{ArangoDB}: es un sistema de base de datos multimodelo desarrollado por triAGENS GmbH. Los datos pueden ser almacenados como parejas de llave/valor, documentos o grafos y pueden ser todos accedidos a través de un solo lenguaje de consultas denominado AQL ({\em ArangoDB Query Language}). Sus más importantes ventajas competitivas son las siguientes:
+		\begin{itemize}
+			\item Manejo de múltiples modelos de datos con un solo lenguaje de consultas.
+			\item API HTTP para gestionar bases de datos.
+			\item Multiarquitectura
+			\item Complejidad operacional reducida
+			\item Consistencia de datos fuerte
+		\end{itemize}
+		\item \textbf{InfiniteGraph}: es una base de datos distribuida implementada en Java con su núcleo en C++ y desarrollada por Objectivity. Algunas de sus ventajas competitivas son:
+		\begin{itemize}
+			\item API/Protocolos: Java (núcleo en C++)
+			\item modelo de grafo multipropiedad
+			\item respaldo en línea
+			\item Procesamiento multihilo
+		\end{itemize}
+		\item \textbf{Neo4j}: es una base de datos de grafos {\em open-source} implementada en Java. Sus desarrolladores la describen como una base de datos totalmente transaccional y un motor de Java persistente donde se pueden almacenar estructuras en forma de grafos en vez de tablas. Algunas de sus características más importantes son:
+		\begin{itemize}
+			\item Esquema flexible
+			\item Escalabilidad y confiabilidad
+			\item Lenguaje de consultas Cypher
+			\item API HTTP para gestionar la base de datos
+			\item Soporte de indices con Apache Lucence
+		\end{itemize}
+		\item \textbf{OrientDB}: es un sistema gestor de bases de datos {\em open-source} y multimodelo que soporta modelos de datos en documentos, grafos, llave/valor y objetos. Algunas de sus ventajas son las siguientes:
+		\begin{itemize}
+			\item Soporte de lenguaje SQL
+			\item Soporte de tecnologías web (HTTP, protocolo RESTful, bibliotecas JSON)
+			\item Distribuido con soporte de replicación multimaestro.
+			\item Manipulación de la base de datos a través de Java
+		\end{itemize}
+	\end{itemize}
+	
+	En el estudio realizado por Fernandes \cite{Fernandes-2018}, se resumen las características de estas bases de datos en el Cuadro \ref{tab:t06} donde cada fila representa la característica más importante al elegir el software. En esta comparación se utiliza una escala de 0 a 4 donde el grado 4 significa que la característica ha sido bien implementada y 1 significa que la característica no ha sido bien implementada y debe mejorarse. El grado 0 significa que la característica no es soportada por el software.
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			& \textbf{AllegroGraph} & \textbf{ArangoDB} & \textbf{InfiniteGraph} & \textbf{Neo4j} & \textbf{OrientDB} \\ \hline
+			Esquema Flexible 		& 1 & 3 & 3 & 4 & 3 \\ 
+			Lenguaje de consulta 	& 3 & 3 & 3 & 4 & 3 \\ 
+			{\em Sharding} 			& 3 & 3 & 0 & 0 & 3 \\ 
+			Respaldo		 		& 3 & 2 & 3 & 4 & 3 \\ 
+			Multimodelo 			& 4 & 4 & 2 & 2 & 4 \\ 
+			Multiarquitectura		& 3 & 4 & 3 & 4 & 3 \\ 
+			Escalabilidad 			& 3 & 4 & 3 & 4 & 3 \\ 
+			{\em Cloud Ready}		& 3 & 3 & 4 & 4 & 3 \\ \hline
+			\textbf{Total} 			& 23 & 26 & 21 & 26 & 25 \\ \hline
+		\end{tabular}
+		\caption{Resumen de las principales bases de datos orientadas a grafos}
+		\label{tab:t06}
+	\end{table}
 
-El siguiente cronograma de trabajo se concibe para llevarse a cabo desde el 26 de julio de 2021 hasta el 20 de noviembre de 2021.
+	Para este proyecto se escoge Neo4J no solo por el análisis de Fernandes \cite{Fernandes-2018}, sino por su facilidad de uso, su abundante documentación y su interesante lenguaje de consultas.
+	
+	%-----------------------------------------------------------------------------------------------------------------
+	
+	\newpage
+	\section{Estado del arte}
+	Son múltiples los ejemplos de la utilización de grafos par resolver problemas en los que el contexto es complejo y la relación entre los elementos no es obvia.
+	
+	En trabajos como el de Branting \cite{Branting-2016} se utilizó la analítica de grafos con el fin de estimar los fraudes de los proveedores de salud. Para ello estos investigadores se basaron en dos grupos de algoritmos. Un primer grupo calcula la similaridad en el comportamiento para separa a los proveedores fraudulentos de los no fraudulentos. Un segundo grupo de algoritmos estimó la propagación del riesgo de fraude a través de colocación geoespacial.
+	
+	Muchos de estos algoritmos han sido aplicados con éxito en el análisis de redes sociales. En trabajos como el de Naik \cite{Naik-2017} se utilizó satisfactoriamente la analítica de datos para resumir los \textit{tweets} de manera que los usuarios puedan comprender y decidir a quien seguir dentro de la red social. Un artículo relacionado es el de Drakopoulos \cite{Drakopoulos-2017} en donde se analizan patrones de \textit{conectividad} en \textit{Twitter} con el fin de obtener métricas de influencia dentro de la red social.
+	
+	Simperl \cite{Simperl-2018} planteó en 2020 una plataforma de contratación pública para la Unión Europea basada en grafos con el fin de que las partes en el proceso pudieran tomar decisiones.
+	
+	Soylu en \cite{Soylu-2020-1} y \cite{Soylu-2020-2} construyo también un grafo de conocimiento con datos abiertos provenientes de la contratación estatal en la Unión Europea. En el primer caso, su estrategia se basa fuertemente en la integración de datos, pues estos provienen de múltiples fuentes con diferentes formatos dependiendo del país. En el segundo caso, con mucho más detalle técnico, se agregan herramientas de {\em front-end} para la detección de anomalías y la búsqueda multilinguística.
+	
+	En otros artículos se ha utilizado la analítica de grafos para contemplar aspectos de la contratación pública en los estados. Por ejemplo, se ha utilizado para analizar la competición en los procesos de aprovisionamiento para insumos de la salud pública. \cite{Fountoukidis-2021}: a través de estas técnicas se trató de identificar oligopolios con el fin de que el sector público pudiera intervenir en la regulación en problemas de competición.
+	
+	En la tesis de maestría de Herrera \cite{Herrera-2019} se realizó un estudio basado en la premisa de que la detección de corrupción y de los riesgos de corrupción está circunscrita en el ámbito de la detección de fraudes. Este afirmaba que el análisis de procesos de contratación como eventos discretos es insuficiente par capturar la actividad de las redes de empresas y servidores públicos que participan en actividades ilícitas. Allí se propuso un modelo de grafos capaz de modelas las redes de contratación con tres objetivos claros: (1) representar intuitivamente las alertas que tienen una naturaleza relacional, (2) describir actores y comunidades con actividad sospechosa en las redes de contratación pública, y (3) implementar un modelo de aprendizaje automático que prediga si un contrato ha sido corrompido o no. Este trabajó concluyó que existe n potencial real en la identificación de casos de corrupción en la contratación pública.
+	
+	En 2020, el trabajo de Carneiro \cite{Carneiro-2020} demuestra que, aunque los esquemas de corrupción se han hecho complejos, también ha progresado la tecnología para detectarlos. En este articulo se presenta un modelo para la detección de fraudes en la contratación publica del gobierno de Portugal. Además de una base de datos orientada a grafos se incluyó un motor de reglas legales para enriquecer estos. También contó con una interfaz gráfica de usuario para que los usuarios tomaran decisiones de manera ágil.
+	
+	En 2017, van Erven et al \cite{Erven-2017} utilizaron bases de datos basadas en grafos para recolectar evidencia de fraude en el gobierno de Brasil en procesos de contratación. Allí se sigue una aproximación similar a la de este proyecto que consiste en modelar los datos de contratación a través de Neo4j y realizar consultas a con Cypher para detectar anomalías.
+	
+	El trabajo de Swords \cite{Swords-2019} explica como identificar patrones en los datos de los proveedores y los procesos de contratación de contratación pública. Esta prueba de concepto nuevamente exhibe las posibilidades del uso de bases de datos orientadas a grafos. pues muestra explora patrones interesantes al momento de recuperar información utilizando análisis de centralidad y detección de comunidades. Este trabajo compara dos modelos con diferente granularidad y concluye que existe un incremento diferente en las velocidades de consulta en la medida en que aumenta el costo de almacenamiento.
+	
+	\section{Planteamiento del problema}
+	Según Serrano \cite{Serrano-2014}, la corrupción es un flagelo que ha tocado a todas las civilizaciones del mundo en algún momento de su historia. Las consecuencias de la corrupción incluyen el aumento de la ineficiencia administrativa que a su vez puede incluir la baja calidad en los bienes y servicios prestados. Además, reduce el presupuesto estatal, lo que hace menos productivo el gasto público.
+	
+	Para Betancourt \cite{Betancourt-2018}, uno de los principales problemas es la lentitud al momento de identificar el fenómeno. El trabajo acá propuesto trata de brindar una alternativa en la identificación de estos fenómenos al proporcionar una herramienta con la capacidad de encontrar relaciones complejas en los datos proporcionados por el SECOP.
+	
+	\section{Objetivos}
+		\subsection{Objetivo general}
+		Explorar técnicas de analítica de grafos para identificar irregularidades en datos provenientes de la contratación pública en Colombia.	
+		\subsection{Objetivos específicos}
+		\begin{itemize}
+		\item Proporcionar una herramienta alternativa para el modelo de datos de la contratación pública que permita identificar de manera más intuitiva las prácticas corruptas o actividades inusuales a través de la analítica de grafos.
+		\item Construir una base de datos de grafos a partir de los datos proporcionados por el SECOP.
+		\item Utilizar algoritmos de grafos con el fin de identificar participantes con relaciones inusuales en los contratos públicos.
+		\end{itemize}
+	
+	\section{Metodología}
+	Este trabajo, al ser un proyecto de minería de datos, se alineará con la metodología CRISP-DM \cite{crispdm-2000}. Por consiguiente, el trabajo comprenderá las siguientes fases:
+	\begin{itemize}
+	\item Entendimiento del negocio\\
+	En esta etapa se estudiará con la profundidad necesaria los procesos de contratación pública en Colombia. Esta exploración conceptual estará alineada con los objetivos del proyecto. El resultado de esta etapa será traducir el conocimiento en términos de un problema de minería de datos.
+	\item Entendimiento de los datos\\
+	En este punto se realizará una recolección inicial de datos desde el SECOP a través de \texttt{datos.gov.co} y se llevarán a cabo actividades relacionadas con el entendimiento de los mismo teniendo como referencia el conocimiento adquirido sobre contratación pública.
+	\item Preparación de los datos\\
+	En esta fase se realizarán a cabo la transformación de los datos recopilados desde el SECOP hacia una base de datos basada en grafos lista para analizar.
+	\item Modelamiento\\
+	Una vez preparado el conjunto de datos, se utilizarán algunos de los algoritmos descritos en el Marco Teórico con el fin de encontrar patrones ocultos en la información orientados a identificar participantes sospechosos en los procesos de contratación.
+	\item Evaluación\\
+	Para evaluar la efectividad del modelo, se recopilarán datos en los que previamente se hayan identificado patrones de corrupción con el fin de comparar los resultados.
+	\item Despliegue\\
+	Los resultados del modelo se prepararán para ser mostrados a través de herramientas de visualización de grafos.
+	\end{itemize}
+	
+	\section{Cronograma de trabajo}
+	
+	El siguiente cronograma de trabajo se concibe para llevarse a cabo desde el 26 de julio de 2021 hasta el 20 de noviembre de 2021.
+	
+	\begin{center}
+	\centering
+	\tiny 
+	\newcolumntype{G}{>{\columncolor[gray]{0.8}}c}
+	
+	\begin{tabular}{ |l c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c| }
+	 \hline
+	 \textbf{Actividades} & Meses & 
+	 \multicolumn{4}{c|}{1} & 
+	 \multicolumn{4}{c|}{2} & 
+	 \multicolumn{4}{c|}{3} & 
+	 \multicolumn{4}{c|}{4} 
+	 \\ \cline{3-18}
+	 
+	 & Semanas & 
+	 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 
+	 \\ \hline
+	 
+	 Revisión Bibliográfica & &
+	 \multicolumn{2}{G|}{} & & & & & & & & & & & & & &
+	 \\ \hline
+	 
+	Comprensión del negocio & &
+	&& \multicolumn{1}{G|}{} & & & & & & & & & & & & & 
+	\\ \hline
+	 
+	Comprensión de los datos & &
+	 & & & \multicolumn{3}{G|}{} & & & & & & & & & & 
+	\\ \hline
+	
+	Preparación de los datos & &
+	& & & & & \multicolumn{3}{G|}{} & & & & & & & & 
+	\\ \hline
+	
+	Modelado & &
+	& & & & & & & \multicolumn{5}{G|}{} & & & &
+	\\ \hline
+	
+	Evaluación & &
+	& & & & & & & & & & & \multicolumn{3}{G|}{} & & 
+	\\ \hline
+	
+	Despliegue & &
+	& & & & & & & & & & & & & \multicolumn{2}{G|}{} &
+	\\ \hline
+	 
+	Elaboración de Informe Final & &
+	& & & & & & & & & & & & & & \multicolumn{2}{G|}{} 
+	\\ \hline
+	 
+	\end{tabular}
+	\end{center}
+	
+	\section{Presupuesto}
+	\begin{center}
+	\begin{tabular}{ |p{3cm}|p{2cm}|p{1.5cm}|p{3cm}| }
+	 \hline
+	 \textbf{Recurso} & \textbf{Fuente de financiación} & \textbf{Costo (COP)} & \textbf{Observaciones}\\ 
+	 \hline
+	 Acceso a Internet & Propia & \$110.000 & \\ \hline
+	 Equipo de cómputo & Propia & \$0 & Adquirido\\ \hline
+	 Neo4j Enterprise 2.2.5 for Developers & Propia & \$0 & Gratis con previo registro y uso no comercial. \\ \hline
+	 Intérprete de Python 3.9 & Propia & \$0 & Licencia Open Source compatible con GPL.
+	  \\ \hline
+	 Mano de obra & Propia & \$0 & El autor abordará todas las etapas del proyecto.  \\
+	 \hline
+	\end{tabular}
+	\end{center}
+	
+	\section{Anexos}
+	
+	\begin{table}[!htp]
+		\tiny 
+		\centering
+		\begin{tabular}{|c|p{6.5cm}|c|}
+			\hline
+			\textbf{Nombre de la columna} & \textbf{Descripción} & \textbf{Tipo} \\
+			\hline
+			Nombre & Nombre del proveedor como se registro en SECOP II & Texto simple \\
+			\hline
+			NIT & Número de identificación con el que figura el proveedor en SECOP II & Texto simple \\
+			\hline
+			Tipo de empresa & Tipo de empresa que declara el proveedor al registrarse & Texto simple \\
+			\hline
+			¿Es PYME? & Determina si el proveedor se registró como pequeña empresa & Texto simple  \\
+			\hline
+			Ubicación & Ubicación geográfica de la empresa, de acuerdo al registro del proveedor & Texto simple \\
+			\hline
+			Fecha Creación & Fecha en la que se hizo el primer registro del proveedor & Fecha y hora \\
+			\hline
+			País & País de origen del Proveedor & Texto simple \\
+			\hline
+			Departamento & En caso de Ser un proveedor colombiano, indica el departamento al que corresponde la ubicación principal del Proveedor & Texto simple \\
+			\hline
+			Municipio & En caso de Ser un proveedor colombiano, indica el Municipio al que corresponde la ubicación principal del Proveedor & Texto simple \\
+			\hline
+			Código Categoría Principal & Codigo UNSPSC principal del proveedor & Texto simple \\
+			\hline
+			Descripción Categoría Principal & Descripción UNSPSC principal del proveedor & Texto simple \\
+			\hline
+		\end{tabular}
+		\caption{Columnas del conjunto de datos \textit{Proveedor}.}
+		\label{tab:t01}
+	\end{table}
 
-\begin{center}
-\begin{tabular}{ |c|c| }
- \hline
- \textbf{Actividad} & \textbf{No. de semanas}\\ 
- \hline
- Entendimiento del negocio & 3\\
- Entendimiento de los datos & 3\\
- Preparación de los datos & 3\\
- Modelamiento & 3\\
- Evaluación & 2\\
- Despliegue & 2 \\
- \hline
-\end{tabular}
-\end{center}
+	\begin{table}[!htp]
+	\tiny 
+	\centering
+	\begin{tabular}{|p{3cm}|p{6.5cm}|c|}
+		\hline
+		\textbf{Nombre de la columna} & \textbf{Descripción} & \textbf{Tipo} \\
+		\hline
+		Nombre de entidad& Nombre de la entidad del estado que publica el contrato & Texto simple \\
+		\hline
+		NIT Entidad & NIT de la entidad del estado que publica el contrato & Número \\
+		\hline
+		Departamento & Departamento en el cual se registró la entidad del estado que publica el contrato & Texto simple \\
+		\hline
+		Ciudad & Ciudad en el cual se registró la entidad del estado que publica el contrato & Texto simple \\
+		\hline
+		Localización & Ubicación completa de la entidad del estado que publica el contrato & Texto simple \\
+		\hline
+		Orden & Orden entidad del estado que publica el contrato & Texto simple \\
+		\hline
+		Sector & Sector entidad del estado que publica el contrato & Texto simple \\
+		\hline
+		Rama & Rama del estado de la entidad que publica el contrato & Texto simple \\
+		\hline
+		Entidad Centralizada & Define si la entidad es descentralizada o centralizada & Texto simple \\
+		\hline
+		Proceso de Compra & Identificador del procesos de compra publicado & Texto simple \\
+		\hline
+		ID Contrato & Identificador del proceso de compra publicado & Texto simple \\
+		\hline
+		Referencia del Contrato & Identificador del contrato firmado, generado por la entidad del estado & Texto simple \\
+		\hline
+		Estado Contrato & Estado del contrato, frente a su ejecución, firma o liquidación & Texto simple \\
+		\hline
+		Codigo de Categoria Principal & Codigo UNSPSC de la categoría principal para el contrato & Texto simple \\
+		\hline
+		Descripción del Proceso & Descripción del objeto del proceso de compra & Texto simple  \\
+		\hline
+		Tipo de Contrato & Tipo de contrato de acuerdo a su marco jurídico & Texto simple \\
+		\hline
+		Modalidad de Contratación & Modalidad de contratación de acuerdo al modelo de selección & Texto simple \\
+		\hline
+		Justificación Modalidad de Contratación & Justificación de la modalidad, el escenario bajo el cual se toma la decisión de definir una u otra modalidad de contratación & Texto simple \\
+		\hline
+		Fecha de Firma & Fecha en que fue firmado digitalmente el contrato & Fecha y hora  \\
+		\hline
+		Fecha de Inicio del Contrato & Fecha de inicio de las responsabilidades contractuales & Fecha y hora \\
+		\hline
+		Fecha de Fin del Contrato & Fecha de fin de las responsabilidades contractuales & Fecha y hora \\
+		\hline
+		Fecha de Inicio de Ejecución & Fecha de inicio de la ejecución de las actividades del contrato & Fecha y hora \\
+		\hline
+		Fecha de Fin de Ejecución & Fecha de fin de la ejecución de las actividades del contrato & Fecha y hora \\
+		\hline
+		Condiciones de Entrega & Condiciones bajo las cuales se entrega el producto o servicio & Texto simple \\
+		\hline
+		TipoDocProveedor & Tipo de documento del proveedor adjudicado & Texto simple \\
+		\hline
+		Documento Proveedor & Número de documento del proveedor adjudicado & Texto simple \\
+		\hline
+		Proveedor Adjudicado & Nombre del proveedor adjudicado & Texto simple \\
+		\hline
+		Es grupo & Determina el proveedor es un grupo de entidades, existe un conjunto de datos de CCE que contiene la conformación de los grupos & Texto simple \\
+		\hline
+		Es Pyme & Determina si la empresa es una Pyme & Texto simple \\
+		\hline
+		Habilita Pago Adelantado & Determina si el contrato tiene habilitada la opción de pago de adelantos & Texto simple \\
+		\hline
+		Liquidación & Determina si el contrato ha sido liquidado & Liquidación \\
+		\hline
+		Obligaciones Ambiental & 	
+		Determina si el contrato tiene compromisos de cumplimiento a obligaciones ambientales & Texto simple \\
+		\hline
+		Obligaciones Postconsumo & Determina si el contrato tiene compromisos de cumplimiento a obligaciones posteriores a la entrega del producto o prestación del servicio & Texto simple \\
+		\hline
+		Reversión & Determina si el contrato ha sido reversado & Texto simple \\
+		\hline
+		Valor del Contrato & Valor total del contrato & Número \\
+		\hline
+		Valor de pago adelantado & Valor del pago por adelantado & Número \\
+		\hline
+		Valor Facturado & Valor Facturado a la fecha & Número \\
+		\hline
+		Valor Pendiente de Pago & Valor Pendiente de Pago a la fecha & Número \\
+		\hline
+		Valor Pagado & Valor Pagado a la fecha & Número \\
+		\hline
+		Valor Amortizado & Valor Amortizado a la fecha & Número \\
+		\hline
+		Valor Pendiente de Amortización & Valor Pendiente de Amortizacion a la fecha & Número \\
+		\hline
+		Valor Pendiente de Ejecución & Valor Pendiente de Ejecucion a la fecha & Número  \\
+		\hline
+		Estado BPIN & Estado de asignación del código del Banco de Proyectos de Inversión & Texto simple \\
+		\hline
+		Código BPIN & Código asociado al Banco de Proyectos de Inversión & Texto simple \\
+		\hline
+		Año BPIN & Año de asignación del código del Banco de Proyectos de Inversión & Texto simple \\
+		\hline
+		Saldo CDP & Saldo del CDP asignado al proceso y al contrato & Número \\
+		\hline
+		Saldo Vigencia & Saldo actual para la vigencia del CDP asignado al proceso y al contrato & Número \\
+		\hline
+		EsPostConflicto & Determina si el proceso está asociado a algún evento de acuerdo de paz & Texto simple \\
+		\hline
+		URLProceso & URL del proceso de compra en la plataforma SECOP II & URL \\
+		\hline
+		Destino Gasto & Destino del gasto, a nivel presupuestal & Texto simple  \\
+		\hline
+		Origen de los Recursos & Origen de los Recursos, a nivel presupuestal & Texto simple \\
+		\hline
+		Dias Adicionados & Número de días en que el contrato ha sido adicionado & Número \\
+		\hline
+		Puntos del Acuerdo & En caso de ser un proceso que da cumplimiento a compromisos en el acuerdo de paz, determina a qué puntos da conformidad & Texto simple \\
+		\hline
+		Pilares del Acuerdo & En caso de ser un proceso derivado de compromisos del acuerdo de paz, define el pilar de acuerdo de paz al que corresponde & Texto simple \\
+		\hline
+		Nombre Representante Legal & Nombre del Representante legal de la empresa proveedora & Texto simple \\
+		\hline
+		Nacionalidad Representante Legal & Nacionalidad del representante legal de la empresa proveedora & Texto simple \\
+		\hline
+		Tipo de Identificación Represente Legal & Tipo de identificación del representante legal de la empresa proveedora & Texto simple \\
+		\hline
+		Identificación Representante Legal & Número de identificación del representante legal & Texto simple \\
+		\hline
+		Genero Representante Legal & Número de identificación del representante legal & Texto simple \\
+		\hline
+		Presupuesto General de la Nación - PGN & Valor de origen de los recursos que corresponde al Presupuesto General de la Nación – PGN & Número \\
+		\hline
+		Sistema General de Participaciones & Valor de origen de los recursos que corresponde al Sistema General de Participaciones & Número \\
+		\hline
+		Sistema General de Regalías & Valor de origen de los recursos que corresponde al Sistema General de Regalías & Número \\
+		\hline
+		Recursos Propios (Alcaldía, Gobernaciones y Resguardos Indígenas)& Valor de origen de los recursos que corresponden a Recursos Propios (Alcaldías, Gobernaciones y Resguardos Indígenas) & Número \\
+		\hline
+		Recursos de Crédito & Valor de origen de los recursos que corresponde a Recursos de Crédito & Número \\
+		\hline
+		Recursos Propios & Valor de origen de los recursos que corresponde a Recursos Propios & Número \\
+		\hline
+		Ultima Actualización & Fecha de actualización del registro & Fecha y hora \\
+		\hline
+		Código Entidad & Código generado en la plataforma para la entidad & Texto simple \\ \hline
+	\end{tabular}
+	\caption{Columnas del conjunto de datos \textit{Contratos Electrónicos}.}
+	\label{tab:t02}
+	\end{table}
 
-\section{Presupuesto}
-\begin{center}
-\begin{tabular}{ |p{3cm}|p{2cm}|p{1.5cm}|p{3cm}| }
- \hline
- \textbf{Recurso} & \textbf{Fuente de financiación} & \textbf{Costo (COP)} & \textbf{Observaciones}\\ 
- \hline
- Acceso a Internet & Propia & \$110.000 & \\ \hline
- Equipo de cómputo & Propia & \$0 & Adquirido\\ \hline
- Neo4j Enterprise 2.2.5 for Developers & Propia & \$0 & Gratis con previo registro y uso no comercial. \\ \hline
- Intérprete de Python 3.9 & Propia & \$0 & Licencia Open Source compatible con GPL. \\
- \hline
-\end{tabular}
-\end{center}
+	\begin{table}[!htp]
+		\tiny 
+		\centering
+		\begin{tabular}{|p{3cm}|p{6.5cm}|c|}
+		\hline
+		\textbf{Nombre de la columna} & \textbf{Descripción} & \textbf{Tipo} \\
+		\hline
+		Entidad	&
+		Nombre de la Entidad que publica el proceso de compra pública &
+		Texto simple \\ \hline
+		Nit Entidad &	
+		NIT de la Entidad que publicó el proceso &
+		Texto simple \\ \hline
+		Departamento Entidad &	
+		Departamento en el cual está registrada la entidad &
+		Texto simple \\ \hline
+		Ciudad Entidad &	
+		Ciudad en la cual está registrada la entidad &
+		Texto simple \\ \hline
+		OrdenEntidad &	
+		Orden de la Entidad (Nacional, Regional) &
+		Texto simple \\ \hline
+		Entidad Centralizada &	
+		Identifica si la entidad es o no centralizada &
+		Texto simple \\ \hline
+		ID del Proceso &	
+		Identificador Único del Proceso, valor generado por la plataforma &
+		Texto simple \\ \hline
+		Referencia del Proceso &	
+		Identificador del Proceso, valor generado por la Entidad &
+		Texto simple \\ \hline
+		PCI &	
+		Codigo de Unidad - Sub Unidad Contratación &
+		Texto simple \\ \hline
+		ID del Portafolio &	
+		Identificador del Portafolio al cual corresponde el proceso de compra &
+		Texto simple \\ \hline
+		Nombre del Procedimiento &	
+		Nombre dado al proceso de compra por la Entidad &
+		Texto simple \\ \hline
+		Descripción del Procedimiento &	
+		Primera definición de las características principales del proceso &
+		Texto simple \\ \hline
+		Fase &	
+		Fase en la que actualmente se encuentra el proceso &
+		Texto simple \\ \hline
+		Fecha de Publicacion del Proceso &	
+		Fecha de la publicación inicial del proceso de compra &
+		Fecha y hora \\ \hline
+		Fecha de Ultima Publicación &	
+		Fecha de la última publicación hecha para el proceso de compra &
+		Fecha y hora \\ \hline
+		Fecha de Publicacion (Fase Planeacion Precalificacion) &	
+		Fecha de publicación, dentro del proceso, de la fase de Planeación en Precalificación &
+		Fecha y hora \\ \hline
+		Fecha de Publicacion (Fase Seleccion Precalificacion) &	
+		Fecha de publicación, dentro del proceso, de la fase de Selección en Precalificación &
+		Fecha y hora \\ \hline
+		Fecha de Publicación (Manifestación de Interés) &	
+		Fecha de publicación, dentro del proceso, de la fase de Manifestación de Interés &
+		Fecha y hora \\ \hline
+		Fecha de Publicación (Fase Borrador) &	
+		Fecha de publicación, dentro del proceso, de la fase Borrador &
+		Fecha y hora \\ \hline
+		Fecha de Publicación (Fase Selección) &	
+		Fecha de publicación, dentro del proceso, de la fase Selección &
+		Fecha y hora \\ \hline
+		Precio Base &	
+		Precio Base, proyectado, del proceso de Compra &
+		Número \\ \hline
+		Modalidad de Contratación &	
+		Modalidad de selección bajo la cual se desarrolla el proceso de Compra &
+		Texto simple \\ \hline
+		Justificación Modalidad de Contratación &	
+		En caso de requerirse, Justificación para la modalidad de selección elegida para el proceso de compra &
+		Texto simple \\ \hline
+		Duración &	
+		Valor de la Duración estimada del proceso de compra pública &
+		Número \\ \hline
+		Unidad de Duración &	
+		Unidad que aplica a la Duración estimada del proceso de compra pública &
+		Texto simple \\ \hline
+		Fecha de Recepción de Respuestas &	
+		Fecha asignada para la recepción de respuestas por parte de los proveedores, dentro del proceso de compra &
+		Fecha y hora \\ \hline
+		Fecha de Apertura de Respuesta &	
+		Fecha Estimada para la Apertura de las respuestas &
+		Fecha y hora \\ \hline
+		Fecha de Apertura Efectiva &	
+		Fecha Real para la Apertura de las respuestas &
+		Fecha y hora \\ \hline
+		Ciudad de la Unidad de Contratación &	
+		Cuidad en la que aparece registrada la unidad de contratación de la Entidad &
+		Texto simple \\ \hline
+		Nombre de la Unidad de Contratación &	
+		Nombre de la unidad de contratación de la Entidad &
+		Texto simple \\ \hline
+		Proveedores Invitados &	
+		Número de Proveedores invitados a participar del proceso, en total &
+		Número \\ \hline
+		Proveedores con Invitación Directa &	
+		Proveedores con Invitación a participar hecha de forma directa &
+		Número \\ \hline
+		Visualizaciones del Procedimiento &	
+		Número de Visualizaciones hechas a través de la herramienta, del Proceso de Compra &
+		Número \\ \hline
+		Proveedores que Manifestaron Interés &	
+		Proveedores que Manifestaron Interés en el proceso a través de la plataforma &
+		Número \\ \hline
+		Respuestas al Procedimiento &	
+		Respuestas hechas al procedimiento, tanto de proveedores como de la misma entidad &
+		Número \\ \hline
+		Respuestas Externas &	
+		Número de Respuestas hechas por entes externos &
+		Número \\ \hline
+		Conteo de Respuestas a Ofertas &	
+		Número de Respuestas hechas de forma directa en las ofertas &
+		Número \\ \hline
+		Proveedores Únicos con Respuestas &	
+		Proveedores Únicos que han redactado respuestas en el proceso &
+		Número \\ \hline
+		Numero de Lotes &	
+		Número de lotes de artículos solicitados dentro del proceso &
+		Número \\ \hline
+		Estado del Procedimiento &	
+		Estado actual de desarrollo del procedimiento de compra pública &
+		Texto simple \\ \hline
+		ID Estado del Procedimiento &	
+		Identificador del Estado del procedimiento &
+		Número \\ \hline
+		Adjudicado &	
+		Determina si el proceso fue adjudicado &
+		Texto simple \\ \hline
+		ID Adjudicación &	
+		Identificador de la adjudicación &
+		Texto simple \\ \hline
+		CodigoProveedor &	
+		Código, en la plataforma, del proveedor adjudicado &
+		Texto simple \\ \hline
+		Departamento Proveedor &	
+		Departamento en el que está registrado el proveedor adjudicado &
+		Texto simple \\ \hline
+		Ciudad Proveedor &	
+		Ciudad en la que está registrado el proveedor adjudicado &
+		Texto simple \\ \hline
+		Fecha Adjudicación &	
+		Fecha en la que se hizo la adjudicación del proceso para el proveedor seleccionado &
+		Fecha y hora \\ \hline
+		Valor Total Adjudicación &	
+		Valor total Adjudicado &
+		Número \\ \hline
+		Nombre del Adjudicador &	
+		Nombre del Usuario que ejecutó la acción de adjudicación &
+		Texto simple \\ \hline
+		Nombre del Proveedor Adjudicado &	
+		Nombre del Proveedor Adjudicado &
+		Texto simple \\ \hline
+		NIT del Proveedor Adjudicado &	
+		NIT del Proveedor Adjudicado &
+		Texto simple \\ \hline
+		Código Principal de Categoria &	
+		Código UNSPSC de la categoría principal del producto o servicio adquirido en proceso de compra &
+		Texto simple \\ \hline
+		Estado de Apertura del Proceso &	
+		Estado actual de Apertura de información del proceso &
+		Texto simple \\ \hline
+		Tipo de Contrato &	
+		Tipo de Contrato definido para el proceso de compra &
+		Texto simple \\ \hline
+		Subtipo de Contrato &	
+		Subtipo de Contrato definido para el proceso de compra &
+		Texto simple \\ \hline
+		Categorias Adicionales &	
+		Identificador de las categorías UNSPSC adicionales, incluidas en el producto o servicio adquirido en proceso de compra &
+		Texto simple \\ \hline
+		URLProceso &	
+		URL, en la plataforma, en la que se puede consultar el proceso de compra &
+		URL del sitio web \\ \hline
+		Codigo Entidad &	
+		Identificador único de la Entidad en la plataforma &
+		Texto simple \\ \hline
+	\end{tabular}
+	\caption{Columnas del conjunto de datos \textit{Procesos de Contratación}.}
+	\label{tab:t03}
+\end{table}
 
-\newpage
-\bibliography{references.bib}
-
-\end{document}
+	\begin{table}[!htp]
+	\tiny 
+	\centering
+	\begin{tabular}{|p{3cm}|p{6.5cm}|c|}
+		\hline
+		\textbf{Nombre de la columna} & \textbf{Descripción} & \textbf{Tipo} \\
+		\hline
+		Identificador & Identificador único del evento de modificación & Texto simple \\
+		\hline
+		ID\_Contrato & Identificador del contrato al que corresponde la modificación & Texto simple \\
+		\hline
+		Tipo & Tipo de modificación, de acuerdo al impacto que tiene sobre el contrato & Texto simple \\
+		\hline
+		Descripción & Descripción detallada de la justificación de la adición o modificación & Texto simple \\
+		\hline
+		FechaRegistro & Fecha en que se hace la modificación & Fecha y hora \\
+		\hline
+	\end{tabular}
+	\caption{Columnas del conjunto de datos \textit{Adiciones}.}
+	\label{tab:t04}
+\end{table}
+	
+	
+	\newpage
+	\bibliography{references.bib}
+	
+	\end{document}
