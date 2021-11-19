@@ -121,7 +121,7 @@
 	
 	Una \textit{base de datos de grafos}, según Bechberger \cite{Bechberger-2020}, es un motor de almacenamiento de datos que combina las estructuras básicas de grafos (nodos y arcos) con un mecanismo de persistencia y un lenguaje de consulta.
 	
-	Modelar los datos es la primera parte del proceso, el procesamiento de los datos permitirá revelar aquello que no es tan obvio. La analítica de grafos es el uso de algoritmos de grafos para analizar datos conectados. Existen varios métodos: consultas. estadísticas básicas, exploración visual del grafo o tareas de aprendizaje automático, véase \cite{Robinson-2013}.
+	Modelar los datos es la primera parte del proceso, el procesamiento de estos permitirá revelar aquello que no es tan obvio. La analítica de grafos es el uso de algoritmos de grafos para analizar datos conectados. Existen varios métodos: consultas, estadísticas básicas, exploración visual del grafo o tareas de aprendizaje automático, véase \cite{Robinson-2013}.
 	
 	Los grafos pueden tomar múltiples formas:
 	\begin{itemize}
@@ -238,30 +238,98 @@
 	
 	\newpage
 	\section{Estado del arte}
-	Son múltiples los ejemplos de la utilización de grafos par resolver problemas en los que el contexto es complejo y la relación entre los elementos no es obvia.
+	Son múltiples los ejemplos de la utilización de grafos para resolver problemas en los que el contexto es complejo y la relación entre los elementos no es evidente.
 	
-	En trabajos como el de Branting \cite{Branting-2016} se utilizó la analítica de grafos con el fin de estimar los fraudes de los proveedores de salud. Para ello estos investigadores se basaron en dos grupos de algoritmos. Un primer grupo calcula la similaridad en el comportamiento para separa a los proveedores fraudulentos de los no fraudulentos. Un segundo grupo de algoritmos estimó la propagación del riesgo de fraude a través de colocación geoespacial.
+	% Recisión sistematica: Identificar, sintetizar, evaluar
+	
+	La investigación de los Papeles de Pandora en 2021 \cite{DiazStruck-2021} es considerada la ``alianza periodística más grande de la historia''. Esta filtración representó varios retos en relación con el tamaño de los datos y la variedad de sus formatos (véase la Figura \ref{fig:pandorainfo}). Se trata de un esfuerzo que involucró a 600 periodistas de 150 medios provenientes de 117 países. Los 2.94 terabytes de datos filtrados se encontraban en diferentes formatos: como documentos, imágenes, correos electrónicos, hojas de cálculo, entre otros. Solo el 4\% de los datos era estructurado. En casos más complejos el ICIJ utilizó aprendizaje automático para separar ciertos tipos de documentos. Una vez estructurados los datos se utilizaron las plataformas Neo4j y Linkurious para generar visualizaciones y hacer la información accesible a búsquedas. Esto permitió a los reporteros trazar conexiones entre personas y compañías a través del mundo.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.6\linewidth]{../img/pandora_info}
+		\caption[]{Los Papeles de Pandora y el tamaños de los datos. Tomado de  \texttt{bbc.com} \cite{BBC-2021}}
+		\label{fig:pandorainfo}
+	\end{figure}
+
+	En 2016, una filtración similar había ocurrido en los llamados Papeles de Panamá. En esta ocasión, se filtraron 11.5 millones de documentos (2.6 terabytes) con información financiera de más de 2000 entidades \textit{offshore} \cite{mukhopadhyay-2020}. En primera instancia, se formó un equipo de datos que limpio y anotó los datos no estructurados. Posteriormente, se introdujeron los datos en una base de datos de grafos. Finalmente, una red de periodistas expertos generó \textit{insights} financieros y fiscales a partir de los nodos y arcos del grafo.
+	
+	
+	En trabajos como el de Branting \cite{Branting-2016} se utilizó la analítica de grafos con el fin de estimar los fraudes de los proveedores de salud. Para ello estos investigadores se basaron en dos grupos de algoritmos. Un primer grupo calcula la similaridad en el comportamiento para separa a los proveedores fraudulentos de los no fraudulentos. Un segundo grupo de algoritmos estimó la propagación del riesgo de fraude a través de ubicación geoespacial.
 	
 	Muchos de estos algoritmos han sido aplicados con éxito en el análisis de redes sociales. En trabajos como el de Naik \cite{Naik-2017} se utilizó satisfactoriamente la analítica de datos para resumir los \textit{tweets} de manera que los usuarios puedan comprender y decidir a quien seguir dentro de la red social. Un artículo relacionado es el de Drakopoulos \cite{Drakopoulos-2017} en donde se analizan patrones de \textit{conectividad} en \textit{Twitter} con el fin de obtener métricas de influencia dentro de la red social.
 	
 	Simperl \cite{Simperl-2018} planteó en 2020 una plataforma de contratación pública para la Unión Europea basada en grafos con el fin de que las partes en el proceso pudieran tomar decisiones.
 	
-	Soylu en \cite{Soylu-2020-1} y \cite{Soylu-2020-2} construyo también un grafo de conocimiento con datos abiertos provenientes de la contratación estatal en la Unión Europea. En el primer caso, su estrategia se basa fuertemente en la integración de datos, pues estos provienen de múltiples fuentes con diferentes formatos dependiendo del país. En el segundo caso, con mucho más detalle técnico, se agregan herramientas de {\em front-end} para la detección de anomalías y la búsqueda multilinguística.
+	Soylu en \cite{Soylu-2020-1} y \cite{Soylu-2020-2} construyó también un grafo de conocimiento con datos abiertos provenientes de los datos abiertos de la Unión Europea. En el primer caso, su estrategia se basa fuertemente en la integración de datos, pues estos provienen de múltiples fuentes con diferentes formatos dependiendo del país. En el segundo caso, con mucho más detalle técnico, se agregan herramientas de {\em front-end} para la detección de anomalías y la búsqueda multilinguística.
 	
-	En otros artículos se ha utilizado la analítica de grafos para contemplar aspectos de la contratación pública en los estados. Por ejemplo, se ha utilizado para analizar la competición en los procesos de aprovisionamiento para insumos de la salud pública. \cite{Fountoukidis-2021}: a través de estas técnicas se trató de identificar oligopolios con el fin de que el sector público pudiera intervenir en la regulación en problemas de competición.
+	En otros artículos se ha utilizado la analítica de grafos para contemplar aspectos de la contratación pública en los estados. Por ejemplo, se ha utilizado para analizar las competencias en los procesos de aprovisionamiento para insumos de la salud pública. \cite{Fountoukidis-2021}: a través de estas técnicas se trató de identificar oligopolios con el fin de que el sector público pudiera intervenir en la regulación en problemas de competición.
 	
-	En la tesis de maestría de Herrera \cite{Herrera-2019} se realizó un estudio basado en la premisa de que la detección de corrupción y de los riesgos de corrupción está circunscrita en el ámbito de la detección de fraudes. Este afirmaba que el análisis de procesos de contratación como eventos discretos es insuficiente par capturar la actividad de las redes de empresas y servidores públicos que participan en actividades ilícitas. Allí se propuso un modelo de grafos capaz de modelas las redes de contratación con tres objetivos claros: (1) representar intuitivamente las alertas que tienen una naturaleza relacional, (2) describir actores y comunidades con actividad sospechosa en las redes de contratación pública, y (3) implementar un modelo de aprendizaje automático que prediga si un contrato ha sido corrompido o no. Este trabajó concluyó que existe n potencial real en la identificación de casos de corrupción en la contratación pública.
+	En la tesis de maestría de Herrera \cite{Herrera-2019} se realizó un estudio basado en la premisa de que la detección de corrupción y de los riesgos de corrupción está circunscrita en el ámbito de la detección de fraudes. Este afirma que el análisis de procesos de contratación como eventos discretos es insuficiente par capturar la actividad de las redes de empresas y servidores públicos que participan en actividades ilícitas. Allí se propuso un modelo de grafos capaz de modelar las redes de contratación con tres objetivos claros: (1) representar intuitivamente las alertas que tienen una naturaleza relacional, (2) describir actores y comunidades con actividad sospechosa en las redes de contratación pública, y (3) implementar un modelo de aprendizaje automático que prediga si un contrato ha sido corrompido o no. Este trabajó concluyó que existe n potencial real en la identificación de casos de corrupción en la contratación pública.
 	
-	En 2020, el trabajo de Carneiro \cite{Carneiro-2020} demuestra que, aunque los esquemas de corrupción se han hecho complejos, también ha progresado la tecnología para detectarlos. En este articulo se presenta un modelo para la detección de fraudes en la contratación publica del gobierno de Portugal. Además de una base de datos orientada a grafos se incluyó un motor de reglas legales para enriquecer estos. También contó con una interfaz gráfica de usuario para que los usuarios tomaran decisiones de manera ágil.
+	En 2020, el trabajo de Carneiro \cite{Carneiro-2020} demuestra que, aunque los esquemas de corrupción se han hecho complejos, también ha progresado la tecnología para detectarlos. En este articulo se presenta un modelo para la detección de fraudes en la contratación publica del gobierno de Portugal. Además de una base de datos orientada a grafos se incluyó un motor de reglas legales para enriquecer estos. También se construyó con una interfaz gráfica de usuario para que estos tomaran decisiones de manera ágil.
 	
-	En 2017, van Erven et al \cite{Erven-2017} utilizaron bases de datos basadas en grafos para recolectar evidencia de fraude en el gobierno de Brasil en procesos de contratación. Allí se sigue una aproximación similar a la de este proyecto que consiste en modelar los datos de contratación a través de Neo4j y realizar consultas a con Cypher para detectar anomalías.
+	En 2017, van Erven et al \cite{Erven-2017} utilizaron bases de datos basadas en grafos para recolectar evidencia de fraude en el gobierno de Brasil en procesos de contratación. Allí se sigue una aproximación similar a la de este proyecto que consiste en modelar los datos de contratación a través de Neo4j y realizar consultas con Cypher para detectar anomalías.
 	
-	El trabajo de Swords \cite{Swords-2019} explica como identificar patrones en los datos de los proveedores y los procesos de contratación de contratación pública. Esta prueba de concepto nuevamente exhibe las posibilidades del uso de bases de datos orientadas a grafos. pues muestra explora patrones interesantes al momento de recuperar información utilizando análisis de centralidad y detección de comunidades. Este trabajo compara dos modelos con diferente granularidad y concluye que existe un incremento diferente en las velocidades de consulta en la medida en que aumenta el costo de almacenamiento.
+	El trabajo de Swords \cite{Swords-2019} explica como identificar patrones en los datos de los proveedores y los procesos de contratación pública. Esta prueba de concepto nuevamente exhibe las posibilidades del uso de bases de datos orientadas a grafos, pues muestra y explora patrones interesantes al momento de recuperar información utilizando análisis de centralidad y detección de comunidades. Este trabajo compara dos modelos con diferente granularidad y concluye que existe un incremento diferente en las velocidades de consulta en la medida en que aumenta el costo de almacenamiento.
 	
+	Finalmente, el Cuadro \ref{tab:t07} muestra un análisis de los trabajos mencionados, las técnicas utilizadas y los principales hallazgos.
+	
+	\begin{table}[!b]
+	\begin{center}
+		\centering
+		\small
+		\newcolumntype{G}{>{\columncolor[gray]{0.8}}c}
+		
+		\begin{tabular}{ |c|p{3cm}|p{3cm}|p{5cm}| }
+			\hline
+			\textbf{Trabajo} 
+			& \textbf{Conjunto de datos}
+			& \textbf{Técnica}
+			& \textbf{Resultados}
+			\\ \hline
+			
+			Papeles de Pandora 
+			& Múltiples fuentes (2.9 TB de información) 
+			& \textit{Keyword Search}, aprendizaje automático,
+			entre otras técnicas. 
+			& El trabajo expone los tratos y negocios de 
+			numerosos políticos en todo el mundo (Rusia, Reino 
+			Unido, Chile, Pakistán, Filipinas, Azerbaiyán, etc.)
+			Al igual que en 2016, pone nuevamente en el centro 
+			del debate las consideraciones morales y legales 
+			sobre la retención de grandes sumas de dinero en 
+			entidades \textit{offshore}. \\ \hline
+			
+			Papeles de Panamá & Múltiples fuentes (2.6 TB de información) & \textit{PageRank}, \textit{Betweeness centrality}, \textit{closeness centrality} & Desencadena un debate público mundial sobre los paraísos fiscales. Varias celebridades, políticos, deportistas, entre otros personajes, son públicamente cuestionados por la gestión de su impuestos y el traslado de sus riquezas. \\ \hline
+			
+			Naik & Twitter & Detección de comunidades & La técnica indicada permite agrupar \textit{tweets} similares para diferentes eventos noticiosos. \\ \hline
+			
+			Simperl & Proyecto \textit{TheyBuyForYou} & Grafos semánticos de conocimiento & El proyecto se encuentra en construcción.\\ \hline
+			
+			Soylu & OpenOpps (contratación pública de múltiples fuentes) y datos abiertos de varios países y otras entidades reguladoras  & Grafos semánticos de conocimiento, aprendizaje automático, detección de anomalías, entre otros. & Los problemas de calidad de datos representaron un reto. No obstante, se logra habilitar un tipo de analítica avanzado que con otros modelos de datos sería imposible obtener. \\ \hline
+			
+			Herrera & \textit{Open Contracting Data Standard} (millones de registros asociados a contratos públicos) & Aprendizaje automático & Los resultados sugieren que el modelo propuesto tiene un alto potencial de identificar casos reales de corrupción y permitiría pasar de una estrategia reactiva a una proactiva. \\ \hline
+			
+			Carneiro & Conjuntos de datos públicos & Detección de fraudes & El sistema se encuentra en construcción \\ \hline
+			
+			Van Erven & Datos abiertos del gobierno de Brazil & Árboles de mínima expansión & Se detectaron escenarios con compañías altamente centrales que representan riesgo de corrupción. \\ \hline
+			
+			Swords & \textit{Tenders Electronics Daily} (datos abiertos de contratación de la Unión Europea) & Centralidad y detección de comunidades & Se detecta incremento en el rendimiento asociado al procesamiento de consultas. Se detectaron entidades con alta influencia en el conjunto de datos. \\ \hline
+			
+			
+		\end{tabular}
+	\end{center}		
+		\caption{Análisis de trabajos similares}
+		\label{tab:t07}
+	\end{table}
+
+
 	\section{Planteamiento del problema}
+	
 	Según Serrano \cite{Serrano-2014}, la corrupción es un flagelo que ha tocado a todas las civilizaciones del mundo en algún momento de su historia. Las consecuencias de la corrupción incluyen el aumento de la ineficiencia administrativa que a su vez puede incluir la baja calidad en los bienes y servicios prestados. Además, reduce el presupuesto estatal, lo que hace menos productivo el gasto público.
 	
 	Para Betancourt \cite{Betancourt-2018}, uno de los principales problemas es la lentitud al momento de identificar el fenómeno. El trabajo acá propuesto trata de brindar una alternativa en la identificación de estos fenómenos al proporcionar una herramienta con la capacidad de encontrar relaciones complejas en los datos proporcionados por el SECOP.
+	
 	
 	\section{Objetivos}
 		\subsection{Objetivo general}
@@ -269,9 +337,13 @@
 		\subsection{Objetivos específicos}
 		\begin{itemize}
 		\item Proporcionar una herramienta alternativa para el modelo de datos de la contratación pública que permita identificar de manera más intuitiva las prácticas corruptas o actividades inusuales a través de la analítica de grafos.
+		\item Diseñar un esquema de base de datos basada en grafos capaz de almacenar la información procesada del SECOP.
 		\item Construir una base de datos de grafos a partir de los datos proporcionados por el SECOP.
 		\item Utilizar algoritmos de grafos con el fin de identificar participantes con relaciones inusuales en los contratos públicos.
 		\end{itemize}
+	
+	
+
 	
 	\section{Metodología}
 	Este trabajo, al ser un proyecto de minería de datos, se alineará con la metodología CRISP-DM \cite{crispdm-2000}. Por consiguiente, el trabajo comprenderá las siguientes fases:
@@ -347,19 +419,42 @@
 	\end{tabular}
 	\end{center}
 	
+	\newpage
+	
 	\section{Presupuesto}
+	Bajo las condiciones de un proyecto empresarial hipotético, se debería disponer por lo menos de una célula compuesta de un ingeniero de calidad de datos, un ingeniero de datos, un científico de datos y un documentador. El presupuesto mostrado a continuación asume una célula como esta con salarios promedios a 2021 en pesos colombianos y un porcentaje de dedicación. Con estos datos, se estima que el valor aproximado del proyecto estaría alrededor de los 23 millones de pesos.
+	
 	\begin{center}
-	\begin{tabular}{ |p{3cm}|p{2cm}|p{1.5cm}|p{3cm}| }
+	\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}| }
 	 \hline
-	 \textbf{Recurso} & \textbf{Fuente de financiación} & \textbf{Costo (COP)} & \textbf{Observaciones}\\ 
+	 \textbf{Recurso} 
+	 & \textbf{Costo por hora} 
+	 & \textbf{Porcentaje de dedicación} 
+	 & \textbf{Total costo en proyecto}\\ 
 	 \hline
-	 Acceso a Internet & Propia & \$110.000 & \\ \hline
-	 Equipo de cómputo & Propia & \$0 & Adquirido\\ \hline
-	 Neo4j Enterprise 2.2.5 for Developers & Propia & \$0 & Gratis con previo registro y uso no comercial. \\ \hline
-	 Intérprete de Python 3.9 & Propia & \$0 & Licencia Open Source compatible con GPL.
-	  \\ \hline
-	 Mano de obra & Propia & \$0 & El autor abordará todas las etapas del proyecto.  \\
-	 \hline
+	 
+	 Calidad de datos 
+	 & \$13.846 
+	 & 60\% 
+	 & \$5.316.864 \\ \hline
+	 
+	 Ingeniería de datos 
+	 & \$24.615 
+	 & 30\% 
+	 & \$4.726.080 \\ \hline
+	 
+	 Analítica de datos 
+	 & \$24.952
+	 & 30\%
+	 & \$4.790.784 \\ \hline
+	 
+	 Documentación 
+	 & \$12.923 
+	 & 100\% 
+	 & \$8.270.720 \\ \hline
+	 
+	 \textbf{Total} & \textbf{\$76.336} &  & \textbf{\$23.104.448} \\ \hline
+	 
 	\end{tabular}
 	\end{center}
 	
